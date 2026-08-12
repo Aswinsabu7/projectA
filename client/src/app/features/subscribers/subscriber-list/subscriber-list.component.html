@@ -1,0 +1,148 @@
+<p-toast />
+<p-confirmdialog />
+
+<div class="subscribers-page">
+  <p-toolbar styleClass="mb-3">
+    <ng-template pTemplate="start">
+      <h1 class="page-title">Subscribers</h1>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <button
+        *appHasPermission="PERMISSIONS.SUBSCRIBER_IMPORT"
+        pButton
+        type="button"
+        label="Import"
+        icon="pi pi-upload"
+        class="p-button-outlined mr-2"
+        (click)="importVisible.set(true)"
+      ></button>
+      <button
+        *appHasPermission="PERMISSIONS.SUBSCRIBER_EXPORT"
+        pButton
+        type="button"
+        label="Export"
+        icon="pi pi-download"
+        class="p-button-outlined mr-2"
+        (click)="exportExcel()"
+      ></button>
+      <button
+        *appHasPermission="PERMISSIONS.SUBSCRIBER_CREATE"
+        pButton
+        type="button"
+        label="Add Subscriber"
+        icon="pi pi-plus"
+        (click)="openCreateDialog()"
+      ></button>
+    </ng-template>
+  </p-toolbar>
+
+  <div class="filters-bar">
+    <p-iconfield>
+      <p-inputicon class="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search name, mobile, subscriber ID..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event); onSearchChange()"
+      />
+    </p-iconfield>
+
+    <p-select
+      [options]="platformOptions"
+      [ngModel]="platformFilter()"
+      (ngModelChange)="platformFilter.set($event); onSearchChange()"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Platform"
+    />
+
+    <p-select
+      [options]="statusOptions"
+      [ngModel]="statusFilter()"
+      (ngModelChange)="statusFilter.set($event); onSearchChange()"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Status"
+    />
+  </div>
+
+  <p-table
+    [value]="subscribers()"
+    [lazy]="true"
+    (onLazyLoad)="loadData($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [loading]="loading()"
+    dataKey="_id"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="subscriberId">ID <p-sortIcon field="subscriberId" /></th>
+        <th pSortableColumn="fullName">Name <p-sortIcon field="fullName" /></th>
+        <th>Mobile</th>
+        <th>Platform</th>
+        <th pSortableColumn="subscriptionEndDate">Expiry Date <p-sortIcon field="subscriptionEndDate" /></th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th style="width: 130px">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-subscriber>
+      <tr>
+        <td>{{ subscriber.subscriberId }}</td>
+        <td>{{ subscriber.fullName }}</td>
+        <td>{{ subscriber.mobileNumber }}</td>
+        <td>{{ subscriber.platform }}</td>
+        <td>{{ subscriber.subscriptionEndDate | date: 'mediumDate' }}</td>
+        <td>{{ subscriber.amountPaid | currency: 'INR' : 'symbol' : '1.0-0' }}</td>
+        <td><p-tag [value]="subscriber.status" [severity]="statusSeverity(subscriber.status)" /></td>
+        <td>
+          <div class="row-actions">
+            <button
+              *appHasPermission="PERMISSIONS.SUBSCRIBER_EDIT"
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-text p-button-sm"
+              (click)="openEditDialog(subscriber)"
+            ></button>
+            <button
+              *appHasPermission="PERMISSIONS.SUBSCRIBER_DELETE"
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              class="p-button-text p-button-sm p-button-danger"
+              (click)="confirmDelete(subscriber)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center py-4">No subscribers found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="formVisible"
+  [modal]="true"
+  [style]="{ width: '520px' }"
+  [header]="selectedSubscriber() ? 'Edit Subscriber' : 'Add Subscriber'"
+>
+  @if (formVisible()) {
+    <app-subscriber-form [subscriber]="selectedSubscriber()" (saved)="onFormSaved()" (cancelled)="formVisible.set(false)" />
+  }
+</p-dialog>
+
+<p-dialog [(visible)]="importVisible" [modal]="true" [style]="{ width: '720px' }" header="Import Subscribers">
+  @if (importVisible()) {
+    <app-subscriber-import (completed)="onImportComplete()" (cancelled)="importVisible.set(false)" />
+  }
+</p-dialog>

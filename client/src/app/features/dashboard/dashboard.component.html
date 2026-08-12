@@ -1,0 +1,57 @@
+<div class="dashboard">
+  <h1 class="page-title">Dashboard</h1>
+
+  <div class="widget-grid">
+    @if (loadingWidgets()) {
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <p-skeleton height="90px" borderRadius="12px" />
+      }
+    } @else {
+      @for (card of widgetCards(); track card.label) {
+        <p-card styleClass="widget-card">
+          <div class="widget-content">
+            <div class="widget-icon" [style.background]="card.color + '22'" [style.color]="card.color">
+              <i [class]="card.icon"></i>
+            </div>
+            <div class="widget-text">
+              <span class="widget-value">
+                @if (card.isCurrency) {
+                  {{ card.value | currency: 'INR' : 'symbol' : '1.0-0' }}
+                } @else {
+                  {{ card.value }}
+                }
+              </span>
+              <span class="widget-label">{{ card.label }}</span>
+            </div>
+          </div>
+        </p-card>
+      }
+    }
+  </div>
+
+  <div class="chart-grid">
+    <p-card header="Subscribers by Platform" styleClass="chart-card">
+      @if (loadingCharts()) {
+        <p-skeleton height="280px" />
+      } @else if (platformChartData()) {
+        <p-chart type="pie" [data]="platformChartData()" [options]="chartOptions()" height="280px" />
+      }
+    </p-card>
+
+    <p-card header="Monthly Subscriber Growth" styleClass="chart-card">
+      @if (loadingCharts()) {
+        <p-skeleton height="280px" />
+      } @else if (growthChartData()) {
+        <p-chart type="bar" [data]="growthChartData()" [options]="chartOptions()" height="280px" />
+      }
+    </p-card>
+
+    <p-card header="Revenue Trend" styleClass="chart-card full-width">
+      @if (loadingCharts()) {
+        <p-skeleton height="280px" />
+      } @else if (revenueChartData()) {
+        <p-chart type="line" [data]="revenueChartData()" [options]="chartOptions()" height="280px" />
+      }
+    </p-card>
+  </div>
+</div>

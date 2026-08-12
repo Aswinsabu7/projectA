@@ -1,0 +1,203 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'primeicons/primeicons.css';
+@use 'primeflex/primeflex.scss';
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Increase contrast of list/dropdown option hover & selected states (select,
+   multiselect, listbox, autocomplete, etc. all share these "list.option.*"
+   tokens, which default to a very low-contrast fixed light-gray). */
+:root,
+.app-dark {
+  --p-list-option-focus-background: color-mix(in srgb, var(--p-primary-color) 16%, transparent);
+  --p-list-option-focus-color: var(--p-text-color);
+  --p-list-option-selected-background: color-mix(in srgb, var(--p-primary-color) 28%, transparent);
+  --p-list-option-selected-color: var(--p-primary-color);
+  --p-list-option-selected-focus-background: color-mix(in srgb, var(--p-primary-color) 36%, transparent);
+  --p-list-option-selected-focus-color: var(--p-primary-color);
+}
+
+/* Layout "chrome" backgrounds (sidebar/topbar) vs the main content area.
+   In dark mode, mixing the content background toward black keeps its blue
+   tint while darkening it - looks great. In LIGHT mode the same color-mix
+   toward black just desaturates to a flat, off-palette grey that clashes
+   with the app's blue-tinted surface scale. So light mode instead reuses
+   the theme's own light surface steps (still on-palette, just a subtly
+   distinct shade) instead of mixing toward black. */
+:root {
+  --app-topbar-bg: var(--p-surface-50);
+  --app-sidebar-bg: var(--p-surface-100);
+}
+
+.app-dark {
+  --app-topbar-bg: color-mix(in srgb, var(--p-content-background) 90%, black 10%);
+  --app-sidebar-bg: color-mix(in srgb, var(--p-content-background) 80%, black 20%);
+}
+
+/* Make all buttons visibly bolder on hover. */
+.p-button:hover {
+  font-weight: 600;
+}
+
+/* Required-field asterisk marker, used as <span class="required-mark">*</span>
+   next to form labels. */
+.required-mark {
+  color: var(--p-red-500, #ef4444);
+  margin-left: 2px;
+}
+
+/* PrimeNG's built-in invalid-field border only appears once a control is
+   "ng-dirty" (i.e. the user edited it). After a failed submit we only mark
+   controls as touched (via markAllAsTouched()), so also show the invalid
+   border/placeholder styling for the ng-touched case. */
+.p-inputtext.ng-invalid.ng-touched,
+.p-select.ng-invalid.ng-touched,
+.p-textarea.ng-invalid.ng-touched,
+.p-listbox.ng-invalid.ng-touched,
+.p-multiselect.ng-invalid.ng-touched,
+.p-selectbutton.ng-invalid.ng-touched,
+.p-togglebutton.ng-invalid.ng-touched,
+.p-treeselect.ng-invalid.ng-touched {
+  border-color: var(--p-red-500, #ef4444);
+}
+
+p-datepicker.ng-invalid.ng-touched .p-inputtext,
+p-password.ng-invalid.ng-touched .p-inputtext,
+p-inputnumber.ng-invalid.ng-touched > .p-inputtext,
+p-input-number.ng-invalid.ng-touched > .p-inputtext {
+  border-color: var(--p-red-500, #ef4444);
+}
+
+/* Keep the paginator anchored to the bottom of the page instead of floating
+   directly under a short/empty table, so it doesn't leave a large dead gap
+   below it when there is little or no data. */
+.subscribers-page,
+.users-page,
+.roles-page,
+.messages-page,
+.audit-log-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  p-table,
+  .p-datatable {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .p-datatable-table-container {
+    flex: 1;
+    overflow: auto;
+  }
+}
+
+/* Every page header uses <h1 class="page-title">, but without a shared
+   reset it falls back to the browser's default h1 margin/font-size
+   (~0.67em vertical margin, ~2em font-size), inflating the toolbar's
+   height and wasting vertical space. Normalize it once, globally. */
+.page-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* p-card defaults to the exact same background as the page it sits on
+   (both resolve to `content.background`) with only a barely-visible
+   shadow, so cards don't read as distinct tiles. Give them a lighter,
+   slightly elevated surface + a real border + a stronger shadow.
+   (Elevated shade differs per color scheme: a touch lighter than the
+   page in light mode, a touch lighter than the page in dark mode too -
+   surface.50/surface.800 respectively - since surface.900+ is reserved
+   for the page background itself in dark mode.) */
+.p-card {
+  border: 1px solid var(--p-content-border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+:root {
+  .p-card {
+    --p-card-background: var(--p-surface-50);
+  }
+}
+
+.app-dark {
+  .p-card {
+    --p-card-background: var(--p-surface-800);
+  }
+}
+
+/* Same issue as .page-title above: most list pages use a
+   <div class="filters-bar"> to hold the search box + filter dropdown(s),
+   but only subscriber-list.component.scss happened to define layout CSS
+   for it. Every other page's filters-bar fell back to plain stacked
+   block-level divs (search box on its own row, dropdown on the row
+   below). Define it once, globally, so the search + filter controls
+   always sit inline on one row. */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  input {
+    min-width: 260px;
+  }
+}
+
+/* PrimeNG's table "loading" overlay reuses the generic .p-overlay-mask
+   class, whose background token (--p-mask-background) is a fixed
+   rgba(0,0,0,0.4) regardless of color scheme - appropriate for dimming
+   an entire page behind a modal dialog, but jarring/"weird" when it
+   covers just a table's header+body, especially in light mode where it
+   reads as a flat dark-grey slab. Tint it to match the table's own
+   background instead, so the loading state reads as a subtle dimming of
+   the table rather than an unrelated dark overlay. */
+.p-datatable-mask {
+  --p-mask-background: color-mix(in srgb, var(--p-content-background) 75%, transparent 25%);
+}
+
+.app-dark .p-datatable-mask {
+  --p-mask-background: color-mix(in srgb, var(--p-content-background) 65%, transparent 35%);
+}
+
+/* Table "Actions" columns (Users, Subscribers, Roles, Message History) mix
+   icon-only buttons with a p-toggleswitch directly inside a <td>, with no
+   layout container. Without flex + align-items, the toggleswitch (which is
+   taller than the icon buttons) throws off vertical alignment, and the
+   pencil/trash icon buttons - being sized to their own icon glyph rather
+   than a fixed box - don't read as equal-sized controls. Wrap them in
+   .row-actions and standardize icon-only button dimensions. */
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .p-button.p-button-icon-only {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+  }
+}
+

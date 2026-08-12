@@ -1,0 +1,312 @@
+{
+  "info": {
+    "name": "ProjectA API",
+    "description": "Subscriber Management System API collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api/v1" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "subscriberId", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "roleId", "value": "" },
+    { "key": "messageId", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": { "type": "noauth" },
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"superadmin\",\n  \"password\": \"SuperAdmin@123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": { "type": "noauth" },
+            "url": "{{baseUrl}}/auth/refresh-token",
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" }
+          }
+        },
+        { "name": "Me", "request": { "method": "GET", "url": "{{baseUrl}}/auth/me" } },
+        { "name": "Logout", "request": { "method": "POST", "url": "{{baseUrl}}/auth/logout" } },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/change-password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"SuperAdmin@123\",\n  \"newPassword\": \"NewPass@123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": { "type": "noauth" },
+            "url": "{{baseUrl}}/auth/forgot-password",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"superadmin@projecta.com\"\n}" }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": { "type": "noauth" },
+            "url": "{{baseUrl}}/auth/reset-password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-here\",\n  \"newPassword\": \"NewPass@123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Get Widgets", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/widgets" } },
+        { "name": "Get Charts", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/charts" } }
+      ]
+    },
+    {
+      "name": "Subscribers",
+      "item": [
+        {
+          "name": "List Subscribers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/subscribers?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["subscribers"],
+              "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }]
+            }
+          }
+        },
+        { "name": "Get Subscriber By Id", "request": { "method": "GET", "url": "{{baseUrl}}/subscribers/{{subscriberId}}" } },
+        {
+          "name": "Create Subscriber",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/subscribers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"mobileNumber\": \"9876543210\",\n  \"email\": \"john@example.com\",\n  \"platform\": \"Netflix\",\n  \"subscriptionStartDate\": \"2025-01-01\",\n  \"subscriptionEndDate\": \"2026-01-01\",\n  \"amount\": 499\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Subscriber",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/subscribers/{{subscriberId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"John Doe Updated\"\n}" }
+          }
+        },
+        { "name": "Delete Subscriber", "request": { "method": "DELETE", "url": "{{baseUrl}}/subscribers/{{subscriberId}}" } },
+        { "name": "Export Subscribers", "request": { "method": "GET", "url": "{{baseUrl}}/subscribers/export" } },
+        { "name": "Download Import Template", "request": { "method": "GET", "url": "{{baseUrl}}/subscribers/import/template" } },
+        {
+          "name": "Preview Import (multipart file)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/subscribers/import/preview",
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "" }]
+            }
+          }
+        },
+        {
+          "name": "Confirm Import",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/subscribers/import/confirm",
+            "body": { "mode": "raw", "raw": "{\n  \"rows\": []\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["users"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        { "name": "Get User By Id", "request": { "method": "GET", "url": "{{baseUrl}}/users/{{userId}}" } },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"jdoe\",\n  \"email\": \"jdoe@example.com\",\n  \"password\": \"Password@123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"{{roleId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/users/{{userId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Johnny\"\n}" }
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/users/{{userId}}/status",
+            "body": { "mode": "raw", "raw": "{\n  \"isActive\": false\n}" }
+          }
+        },
+        { "name": "Delete User", "request": { "method": "DELETE", "url": "{{baseUrl}}/users/{{userId}}" } }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        { "name": "Get Active Roles", "request": { "method": "GET", "url": "{{baseUrl}}/roles/active" } },
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/roles?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["roles"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        { "name": "Get Role By Id", "request": { "method": "GET", "url": "{{baseUrl}}/roles/{{roleId}}" } },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/roles",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Support Agent\",\n  \"description\": \"Handles subscriber support\",\n  \"permissions\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/roles/{{roleId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Support Agent Updated\"\n}" }
+          }
+        },
+        {
+          "name": "Update Role Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/roles/{{roleId}}/status",
+            "body": { "mode": "raw", "raw": "{\n  \"isActive\": true\n}" }
+          }
+        },
+        {
+          "name": "Assign Permissions",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/roles/{{roleId}}/permissions",
+            "body": { "mode": "raw", "raw": "{\n  \"permissions\": [\"subscriber.view\", \"subscriber.create\"]\n}" }
+          }
+        },
+        { "name": "Delete Role", "request": { "method": "DELETE", "url": "{{baseUrl}}/roles/{{roleId}}" } }
+      ]
+    },
+    {
+      "name": "Permissions",
+      "item": [
+        { "name": "Get Grouped Permissions", "request": { "method": "GET", "url": "{{baseUrl}}/permissions" } }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "List Messages",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/messages?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["messages"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Send Manual Message",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/messages/send",
+            "body": { "mode": "raw", "raw": "{\n  \"subscriberId\": \"{{subscriberId}}\",\n  \"messageType\": \"RenewalReminder\"\n}" }
+          }
+        },
+        { "name": "Resend Message", "request": { "method": "POST", "url": "{{baseUrl}}/messages/{{messageId}}/resend" } }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "List Audit Logs",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/audit-logs?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["audit-logs"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "item": [
+        { "name": "Get Settings", "request": { "method": "GET", "url": "{{baseUrl}}/settings" } },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/settings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": { \"defaultTheme\": \"light\", \"allowUserToggle\": true },\n  \"passwordPolicy\": { \"minLength\": 8, \"requireUppercase\": true, \"requireNumber\": true, \"requireSpecialChar\": false, \"expiryDays\": 90 }\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

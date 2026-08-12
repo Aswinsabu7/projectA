@@ -1,0 +1,138 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--p-content-background);
+}
+
+.sidebar {
+  width: 250px;
+  /* Darkest of the three layout zones - a distinct "chrome" panel rather
+     than blending into the main content background. Defined in styles.scss
+     (--app-sidebar-bg) since it needs different treatment per color scheme. */
+  background: var(--app-sidebar-bg);
+  border-right: 1px solid var(--p-content-border-color);
+  transition: width 0.2s ease;
+  display: flex;
+  flex-direction: column;
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.25rem 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--p-content-border-color);
+
+    i {
+      font-size: 1.4rem;
+      color: var(--p-primary-color);
+    }
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0.5rem;
+    gap: 0.25rem;
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 8px;
+      color: var(--p-text-color);
+      text-decoration: none;
+      font-size: 0.925rem;
+
+      i {
+        font-size: 1.05rem;
+        width: 1.2rem;
+        text-align: center;
+      }
+
+      &:hover {
+        background: color-mix(in srgb, var(--p-text-color) 10%, transparent);
+      }
+
+      &.active {
+        background: color-mix(in srgb, var(--p-primary-color) 22%, transparent);
+        color: var(--p-primary-color);
+        font-weight: 700;
+        border-left: 3px solid var(--p-primary-color);
+        padding-left: calc(0.75rem - 3px);
+      }
+    }
+  }
+}
+
+.app-shell.sidebar-collapsed .sidebar {
+  width: 72px;
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  /* Slightly darker than the main content area, but lighter than the
+     sidebar, so all three layout zones (sidebar / topbar / content) read
+     as visually distinct panels instead of one flat background. Defined
+     in styles.scss (--app-topbar-bg) since it needs different treatment
+     per color scheme. */
+  background: var(--app-topbar-bg);
+  border-bottom: 1px solid var(--p-content-border-color);
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+
+    &:hover {
+      background: var(--p-content-hover-background);
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+
+      .username {
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .role {
+        font-size: 0.75rem;
+        color: var(--p-text-muted-color);
+      }
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--p-content-background);
+}

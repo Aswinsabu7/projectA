@@ -1,0 +1,58 @@
+const ROLES = {
+  SUPER_ADMIN: 'Super Admin',
+  ADMIN: 'Admin',
+  USER: 'User',
+};
+
+const SUBSCRIBER_STATUS = {
+  ACTIVE: 'Active',
+  EXPIRED: 'Expired',
+  RENEWAL_DUE: 'Renewal Due',
+};
+
+const PLATFORM = {
+  INSTAGRAM: 'Instagram',
+  YOUTUBE: 'YouTube',
+};
+
+const MESSAGE_TYPE = {
+  REMINDER_3_DAYS: 'REMINDER_3_DAYS',
+  REMINDER_2_DAYS: 'REMINDER_2_DAYS',
+  REMINDER_1_DAY: 'REMINDER_1_DAY',
+  EXPIRED: 'EXPIRED',
+  MANUAL: 'MANUAL',
+};
+
+const MESSAGE_STATUS = {
+  PENDING: 'Pending',
+  SENT: 'Sent',
+  FAILED: 'Failed',
+};
+
+const USER_STATUS = {
+  ACTIVE: 'Active',
+  INACTIVE: 'Inactive',
+};
+
+const AUDIT_ACTIONS = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT',
+  ROLE_CHANGE: 'ROLE_CHANGE',
+  USER_CHANGE: 'USER_CHANGE',
+  SUBSCRIBER_CHANGE: 'SUBSCRIBER_CHANGE',
+  PASSWORD_CHANGE: 'PASSWORD_CHANGE',
+  IMPORT: 'IMPORT',
+};
+
+module.exports = {
+  ROLES,
+  SUBSCRIBER_STATUS,
+  PLATFORM,
+  MESSAGE_TYPE,
+  MESSAGE_STATUS,
+  USER_STATUS,
+  AUDIT_ACTIONS,
+};

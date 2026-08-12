@@ -1,0 +1,63 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="grid formgrid p-fluid">
+    <div class="field col-12">
+      <label for="fullName">Full Name <span class="required-mark">*</span></label>
+      <input id="fullName" type="text" pInputText formControlName="fullName" class="w-full" />
+      <app-field-error [control]="form.controls.fullName" label="Full name" />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="mobileNumber">Mobile Number <span class="required-mark">*</span></label>
+      <input id="mobileNumber" type="text" pInputText formControlName="mobileNumber" class="w-full" />
+      <app-field-error [control]="form.controls.mobileNumber" label="Mobile number" />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="email">Email</label>
+      <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+      <app-field-error [control]="form.controls.email" label="Email" />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="platform">Platform <span class="required-mark">*</span></label>
+      <p-select
+        id="platform"
+        [options]="platformOptions"
+        formControlName="platform"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full"
+      />
+      <app-field-error [control]="form.controls.platform" label="Platform" />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="amountPaid">Amount Paid <span class="required-mark">*</span></label>
+      <p-inputnumber id="amountPaid" formControlName="amountPaid" mode="currency" currency="INR" locale="en-IN" styleClass="w-full" />
+      <app-field-error [control]="form.controls.amountPaid" label="Amount paid" />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="startDate">Subscription Start <span class="required-mark">*</span></label>
+      <p-datepicker id="startDate" formControlName="subscriptionStartDate" dateFormat="dd/mm/yy" [showIcon]="true" styleClass="w-full" />
+      <app-field-error [control]="form.controls.subscriptionStartDate" label="Subscription start date" />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="endDate">Subscription End <span class="required-mark">*</span></label>
+      <p-datepicker id="endDate" formControlName="subscriptionEndDate" dateFormat="dd/mm/yy" [showIcon]="true" styleClass="w-full" />
+      <app-field-error [control]="form.controls.subscriptionEndDate" label="Subscription end date" />
+    </div>
+
+    <div class="field col-12">
+      <label for="remarks">Remarks</label>
+      <textarea id="remarks" pTextarea formControlName="remarks" rows="3" class="w-full"></textarea>
+    </div>
+  </div>
+
+
+  <div class="flex justify-content-end gap-2 mt-2">
+    <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="cancelled.emit()"></button>
+    <button pButton type="submit" label="Save" icon="pi pi-save" [loading]="saving()"></button>
+  </div>
+</form>

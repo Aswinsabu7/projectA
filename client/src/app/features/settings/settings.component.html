@@ -1,0 +1,147 @@
+<p-toast />
+
+<div class="settings-page">
+  <h1 class="page-title">Settings</h1>
+
+  @if (!loading()) {
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <p-tabs value="0">
+        <p-tablist>
+          <p-tab value="0">Theme</p-tab>
+          <p-tab value="1">WhatsApp</p-tab>
+          <p-tab value="2">SMTP</p-tab>
+          <p-tab value="3">Password Policy</p-tab>
+          <p-tab value="4">Token Expiry &amp; Reminders</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="0">
+            <div class="grid formgrid p-fluid" formGroupName="theme">
+              <div class="field col-12 md:col-6">
+                <label>Default Theme</label>
+                <p-select [options]="themeOptions" formControlName="defaultTheme" optionLabel="label" optionValue="value" styleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6 flex align-items-center gap-2 mt-4">
+                <p-toggleswitch formControlName="allowUserToggle" />
+                <label>Allow users to toggle theme</label>
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <p-tabpanel value="1">
+            <div class="grid formgrid p-fluid" formGroupName="whatsapp">
+              <div class="field col-12 md:col-6">
+                <label>Provider</label>
+                <p-select [options]="whatsappProviderOptions" formControlName="provider" optionLabel="label" optionValue="value" styleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6 flex align-items-center gap-2 mt-4">
+                <p-toggleswitch formControlName="enabled" />
+                <label>Enable WhatsApp Reminders</label>
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Meta Access Token</label>
+                <p-password formControlName="metaToken" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Meta Phone Number ID</label>
+                <input type="text" pInputText formControlName="metaPhoneNumberId" class="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Twilio Account SID</label>
+                <input type="text" pInputText formControlName="twilioAccountSid" class="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Twilio Auth Token</label>
+                <p-password formControlName="twilioAuthToken" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Twilio From Number</label>
+                <input type="text" pInputText formControlName="twilioFrom" class="w-full" />
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <p-tabpanel value="2">
+            <div class="grid formgrid p-fluid" formGroupName="smtp">
+              <div class="field col-12 md:col-6">
+                <label>SMTP Host</label>
+                <input type="text" pInputText formControlName="host" class="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>SMTP Port</label>
+                <p-inputnumber formControlName="port" [useGrouping]="false" styleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6 flex align-items-center gap-2 mt-4">
+                <p-toggleswitch formControlName="secure" />
+                <label>Use TLS/SSL</label>
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>SMTP Username</label>
+                <input type="text" pInputText formControlName="user" class="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>SMTP Password</label>
+                <p-password formControlName="password" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>From Address</label>
+                <input type="text" pInputText formControlName="from" class="w-full" />
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <p-tabpanel value="3">
+            <div class="grid formgrid p-fluid" formGroupName="passwordPolicy">
+              <div class="field col-12 md:col-6">
+                <label>Minimum Length</label>
+                <p-inputnumber formControlName="minLength" [useGrouping]="false" styleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Password Expiry (days)</label>
+                <p-inputnumber formControlName="expiryDays" [useGrouping]="false" styleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-4 flex align-items-center gap-2">
+                <p-toggleswitch formControlName="requireUppercase" />
+                <label>Require Uppercase</label>
+              </div>
+              <div class="field col-12 md:col-4 flex align-items-center gap-2">
+                <p-toggleswitch formControlName="requireNumber" />
+                <label>Require Number</label>
+              </div>
+              <div class="field col-12 md:col-4 flex align-items-center gap-2">
+                <p-toggleswitch formControlName="requireSpecialChar" />
+                <label>Require Special Character</label>
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <p-tabpanel value="4">
+            <div class="grid formgrid p-fluid" formGroupName="tokenExpiry">
+              <div class="field col-12 md:col-6">
+                <label>Access Token Expiry (minutes)</label>
+                <p-inputnumber formControlName="accessTokenMinutes" [useGrouping]="false" styleClass="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Refresh Token Expiry (days)</label>
+                <p-inputnumber formControlName="refreshTokenDays" [useGrouping]="false" styleClass="w-full" />
+              </div>
+            </div>
+            <div class="grid formgrid p-fluid" formGroupName="reminder">
+              <div class="field col-12 md:col-6">
+                <label>Reminder Cron Schedule</label>
+                <input type="text" pInputText formControlName="cronSchedule" class="w-full" />
+              </div>
+              <div class="field col-12 md:col-6">
+                <label>Timezone</label>
+                <input type="text" pInputText formControlName="timezone" class="w-full" />
+              </div>
+            </div>
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+
+      <div class="flex justify-content-end mt-3">
+        <button pButton type="submit" label="Save Settings" icon="pi pi-save" [loading]="saving()"></button>
+      </div>
+    </form>
+  }
+</div>

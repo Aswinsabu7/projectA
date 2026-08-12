@@ -1,0 +1,32 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+  <div class="field">
+    <label for="username">Username</label>
+    <input id="username" type="text" pInputText formControlName="username" class="w-full" autocomplete="username" />
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <p-password
+      id="password"
+      formControlName="password"
+      [toggleMask]="true"
+      [feedback]="false"
+      styleClass="w-full"
+      inputStyleClass="w-full"
+      autocomplete="current-password"
+    />
+  </div>
+
+  @if (errorMessage()) {
+    <p-message severity="error" [text]="errorMessage()!" styleClass="w-full mb-3" />
+  }
+
+  <button
+    pButton
+    type="submit"
+    label="Sign In"
+    icon="pi pi-sign-in"
+    class="w-full"
+    [loading]="loading()"
+  ></button>
+</form>

@@ -1,0 +1,109 @@
+<p-toast />
+<p-confirmdialog />
+
+<div class="users-page">
+  <p-toolbar styleClass="mb-3">
+    <ng-template pTemplate="start">
+      <h1 class="page-title">Users</h1>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <button
+        *appHasPermission="PERMISSIONS.USER_CREATE"
+        pButton
+        type="button"
+        label="Add User"
+        icon="pi pi-plus"
+        (click)="openCreateDialog()"
+      ></button>
+    </ng-template>
+  </p-toolbar>
+
+  <div class="filters-bar mb-3">
+    <p-iconfield>
+      <p-inputicon class="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search name, email, username..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event); onSearchChange()"
+      />
+    </p-iconfield>
+  </div>
+
+  <p-table
+    [value]="users()"
+    [lazy]="true"
+    (onLazyLoad)="loadData($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [loading]="loading()"
+    dataKey="_id"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th style="width: 150px">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.firstName }} {{ user.lastName }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.mobile }}</td>
+        <td>{{ roleName(user) }}</td>
+        <td><p-tag [value]="user.status" [severity]="user.status === 'Active' ? 'success' : 'danger'" /></td>
+        <td>
+          <div class="row-actions">
+            <button
+              *appHasPermission="PERMISSIONS.USER_EDIT"
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-text p-button-sm"
+              (click)="openEditDialog(user)"
+            ></button>
+            <p-toggleswitch
+              *appHasPermission="PERMISSIONS.USER_EDIT"
+              [ngModel]="user.status === 'Active'"
+              (ngModelChange)="toggleStatus(user)"
+            />
+            <button
+              *appHasPermission="PERMISSIONS.USER_DELETE"
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              class="p-button-text p-button-sm p-button-danger"
+              (click)="confirmDelete(user)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center py-4">No users found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="formVisible"
+  [modal]="true"
+  [style]="{ width: '520px' }"
+  [header]="selectedUser() ? 'Edit User' : 'Add User'"
+>
+  @if (formVisible()) {
+    <app-user-form [user]="selectedUser()" (saved)="onFormSaved()" (cancelled)="formVisible.set(false)" />
+  }
+</p-dialog>

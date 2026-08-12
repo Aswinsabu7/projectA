@@ -1,0 +1,49 @@
+<div class="app-shell" [class.sidebar-collapsed]="sidebarCollapsed()">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <i class="pi pi-users"></i>
+      @if (!sidebarCollapsed()) {
+        <span>projectA</span>
+      }
+    </div>
+    <nav class="sidebar-nav">
+      @for (item of navItems(); track item.route) {
+        <a [routerLink]="item.route" routerLinkActive="active" pRipple>
+          <i [class]="item.icon"></i>
+          @if (!sidebarCollapsed()) {
+            <span>{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <button pButton type="button" icon="pi pi-bars" class="p-button-text p-button-rounded" (click)="toggleSidebar()"></button>
+
+      <div class="topbar-actions">
+        <button
+          pButton
+          type="button"
+          [icon]="themeService.mode() === 'dark' ? 'pi pi-sun' : 'pi pi-moon'"
+          class="p-button-text p-button-rounded"
+          (click)="toggleTheme()"
+        ></button>
+
+        <div class="user-menu" (click)="userMenu.toggle($event)">
+          <p-avatar [label]="(currentUser()?.username || '?').charAt(0).toUpperCase()" shape="circle" styleClass="mr-2" />
+          <div class="user-info">
+            <span class="username">{{ currentUser()?.username }}</span>
+            <span class="role">{{ currentUser()?.role }}</span>
+          </div>
+        </div>
+        <p-menu #userMenu [model]="userMenuItems" [popup]="true" />
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

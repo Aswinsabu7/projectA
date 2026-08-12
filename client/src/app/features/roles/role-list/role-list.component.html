@@ -1,0 +1,115 @@
+<p-toast />
+<p-confirmdialog />
+
+<div class="roles-page">
+  <p-toolbar styleClass="mb-3">
+    <ng-template pTemplate="start">
+      <h1 class="page-title">Roles</h1>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <button
+        *appHasPermission="PERMISSIONS.ROLE_CREATE"
+        pButton
+        type="button"
+        label="Add Role"
+        icon="pi pi-plus"
+        (click)="openCreateDialog()"
+      ></button>
+    </ng-template>
+  </p-toolbar>
+
+  <div class="filters-bar mb-3">
+    <p-iconfield>
+      <p-inputicon class="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search roles..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event); onSearchChange()"
+      />
+    </p-iconfield>
+  </div>
+
+  <p-table
+    [value]="roles()"
+    [lazy]="true"
+    (onLazyLoad)="loadData($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [loading]="loading()"
+    dataKey="_id"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Permissions</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th style="width: 150px">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-role>
+      <tr>
+        <td>{{ role.name }}</td>
+        <td>{{ role.description }}</td>
+        <td>{{ permissionCount(role) }} permissions</td>
+        <td>
+          @if (role.isSystemRole) {
+            <p-tag value="System" severity="info" />
+          } @else {
+            <p-tag value="Custom" severity="secondary" />
+          }
+        </td>
+        <td><p-tag [value]="role.isActive ? 'Active' : 'Inactive'" [severity]="role.isActive ? 'success' : 'danger'" /></td>
+        <td>
+          <div class="row-actions">
+            <button
+              *appHasPermission="PERMISSIONS.ROLE_EDIT"
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-text p-button-sm"
+              (click)="openEditDialog(role)"
+            ></button>
+            <p-toggleswitch
+              *appHasPermission="PERMISSIONS.ROLE_EDIT"
+              [ngModel]="role.isActive"
+              (ngModelChange)="toggleStatus(role)"
+            />
+            @if (!role.isSystemRole) {
+              <button
+                *appHasPermission="PERMISSIONS.ROLE_DELETE"
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                class="p-button-text p-button-sm p-button-danger"
+                (click)="confirmDelete(role)"
+              ></button>
+            }
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="text-center py-4">No roles found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="formVisible"
+  [modal]="true"
+  [style]="{ width: '720px' }"
+  [header]="selectedRole() ? 'Edit Role' : 'Add Role'"
+>
+  @if (formVisible()) {
+    <app-role-form [role]="selectedRole()" (saved)="onFormSaved()" (cancelled)="formVisible.set(false)" />
+  }
+</p-dialog>

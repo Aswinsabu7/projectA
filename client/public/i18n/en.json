@@ -1,0 +1,39 @@
+{
+  "APP": {
+    "NAME": "projectA",
+    "TAGLINE": "Subscriber & Renewal Management"
+  },
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "CREATE": "Create",
+    "SEARCH": "Search",
+    "EXPORT": "Export",
+    "IMPORT": "Import",
+    "ACTIONS": "Actions",
+    "STATUS": "Status",
+    "LOADING": "Loading...",
+    "NO_DATA": "No data found",
+    "CONFIRM": "Confirm",
+    "YES": "Yes",
+    "NO": "No"
+  },
+  "AUTH": {
+    "LOGIN": "Login",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "LOGIN_BUTTON": "Sign In",
+    "LOGOUT": "Logout"
+  },
+  "NAV": {
+    "DASHBOARD": "Dashboard",
+    "SUBSCRIBERS": "Subscribers",
+    "MESSAGES": "Message History",
+    "USERS": "Users",
+    "ROLES": "Roles",
+    "SETTINGS": "Settings",
+    "AUDIT_LOG": "Audit Log"
+  }
+}

@@ -1,0 +1,50 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="grid formgrid p-fluid mb-3">
+    <div class="field col-12 md:col-6">
+      <label for="name">Role Name <span class="required-mark">*</span></label>
+      <input id="name" type="text" pInputText formControlName="name" class="w-full" />
+      <app-field-error [control]="form.controls.name" label="Role name" />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="description">Description</label>
+      <input id="description" type="text" pInputText formControlName="description" class="w-full" />
+    </div>
+  </div>
+
+  <h4>Permissions</h4>
+  <div class="permission-groups">
+    @for (group of groupKeys(); track group) {
+      <div class="permission-group">
+        <div class="permission-group-header">
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="isGroupFullyChecked(group)"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="toggleGroup(group, $event)"
+          />
+          <span>{{ group }}</span>
+        </div>
+        <div class="permission-group-items">
+          @for (permission of groupedPermissions()[group]; track permission.key) {
+            <div class="permission-item">
+              <p-checkbox
+                [binary]="true"
+                [ngModel]="isChecked(permission)"
+                [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="togglePermission(permission, $event)"
+                [inputId]="permission.key"
+              />
+              <label [for]="permission.key">{{ permission.name }}</label>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="flex justify-content-end gap-2 mt-3">
+    <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="cancelled.emit()"></button>
+    <button pButton type="submit" label="Save" icon="pi pi-save" [loading]="saving()"></button>
+  </div>
+</form>

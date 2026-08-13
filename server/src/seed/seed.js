@@ -121,16 +121,30 @@ async function seedSettings() {
   return settings;
 }
 
+/**
+ * Ensures baseline data (permissions, system roles, the Super Admin user, and
+ * default settings) exists in the database. Fully idempotent - every step
+ * upserts or checks "already exists, skip" - so it's safe to call on every
+ * server startup, not just once. This lets a fresh clone + a fresh/empty
+ * MongoDB always end up with a working Super Admin login without requiring
+ * a separate manual `npm run seed` step first.
+ *
+ * Assumes a DB connection is already established (does not connect/disconnect
+ * on its own), so it can be reused both here (CLI) and from server.js bootstrap.
+ */
+async function seedInitialData() {
+  const permissions = await seedPermissions();
+  const roles = await seedRoles(permissions);
+  await seedSuperAdmin(roles[ROLES.SUPER_ADMIN]);
+  await seedSettings();
+  logger.info('Seeding completed successfully.');
+}
+
 async function run() {
   await connectDB();
 
   try {
-    const permissions = await seedPermissions();
-    const roles = await seedRoles(permissions);
-    await seedSuperAdmin(roles[ROLES.SUPER_ADMIN]);
-    await seedSettings();
-
-    logger.info('Seeding completed successfully.');
+    await seedInitialData();
   } catch (err) {
     logger.error(`Seeding failed: ${err.message}`);
     process.exitCode = 1;
@@ -140,4 +154,10 @@ async function run() {
   }
 }
 
-run();
+module.exports = { seedInitialData };
+
+// Only run the full connect -> seed -> disconnect CLI flow when this file is
+// executed directly (`npm run seed`), not when required by server.js.
+if (require.main === module) {
+  run();
+}

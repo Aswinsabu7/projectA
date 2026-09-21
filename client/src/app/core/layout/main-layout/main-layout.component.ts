@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
@@ -7,24 +7,7 @@ import { RippleModule } from 'primeng/ripple';
 import { MenuItem } from 'primeng/api';
 import { AuthService } from '../../../services/auth.service';
 import { ThemeService } from '../../../services/theme.service';
-import { PERMISSIONS } from '../../../shared/constants/permissions';
-
-interface NavItem {
-  label: string;
-  icon: string;
-  route: string;
-  permission?: string;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', icon: 'pi pi-chart-line', route: '/dashboard', permission: PERMISSIONS.DASHBOARD_VIEW },
-  { label: 'Subscribers', icon: 'pi pi-users', route: '/subscribers', permission: PERMISSIONS.SUBSCRIBER_VIEW },
-  { label: 'Message History', icon: 'pi pi-whatsapp', route: '/messages', permission: PERMISSIONS.MESSAGE_VIEW },
-  { label: 'Users', icon: 'pi pi-user', route: '/users', permission: PERMISSIONS.USER_VIEW },
-  { label: 'Roles', icon: 'pi pi-shield', route: '/roles', permission: PERMISSIONS.ROLE_VIEW },
-  { label: 'Audit Log', icon: 'pi pi-history', route: '/audit-log', permission: PERMISSIONS.AUDIT_LOG_VIEW },
-  { label: 'Settings', icon: 'pi pi-cog', route: '/settings', permission: PERMISSIONS.SETTINGS_VIEW },
-];
+import { MenuService, MenuItem as NavMenuItem } from '../../../services/menu.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -33,16 +16,19 @@ const NAV_ITEMS: NavItem[] = [
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly menuService = inject(MenuService);
   protected readonly themeService = inject(ThemeService);
 
   protected readonly sidebarCollapsed = signal(false);
   protected readonly currentUser = this.authService.currentUser;
 
   protected readonly navItems = computed(() =>
-    NAV_ITEMS.filter((item) => !item.permission || this.authService.hasPermission(item.permission))
+    this.menuService.menuItems().filter(
+      (item) => !item.permission || this.authService.hasPermission(item.permission)
+    )
   );
 
   protected readonly userMenuItems: MenuItem[] = [
@@ -52,6 +38,10 @@ export class MainLayoutComponent {
       command: () => this.logout(),
     },
   ];
+
+  ngOnInit(): void {
+    this.menuService.loadMenuItems().subscribe();
+  }
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update((v) => !v);

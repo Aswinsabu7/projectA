@@ -8,6 +8,7 @@ const messageHistoryRoutes = require('./messageHistory.routes');
 const dashboardRoutes = require('./dashboard.routes');
 const settingsRoutes = require('./settings.routes');
 const auditLogRoutes = require('./auditLog.routes');
+const menuItemRoutes = require('./menuItem.routes');
 
 const router = express.Router();
 
@@ -22,5 +23,6 @@ router.use('/messages', messageHistoryRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/audit-logs', auditLogRoutes);
+router.use('/menu-items', menuItemRoutes);
 
 module.exports = router;

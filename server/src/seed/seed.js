@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const env = require('../config/env');
 const logger = require('../config/logger');
 const { connectDB, disconnectDB } = require('../config/db');
-const { User, Role, Permission, Settings } = require('../models');
+const { User, Role, Permission, Settings, MenuItem } = require('../models');
 const { PERMISSION_GROUPS, PERMISSIONS } = require('../constants/permissions');
 const { ROLES, USER_STATUS } = require('../constants/roles');
 const { hashPassword } = require('../utilities/password.util');
@@ -121,6 +121,29 @@ async function seedSettings() {
   return settings;
 }
 
+async function seedMenuItems() {
+  const defaultItems = [
+    { key: 'dashboard', label: 'Dashboard', icon: 'pi pi-chart-line', route: '/dashboard', permission: PERMISSIONS.DASHBOARD_VIEW, order: 1 },
+    { key: 'subscribers', label: 'Subscribers', icon: 'pi pi-users', route: '/subscribers', permission: PERMISSIONS.SUBSCRIBER_VIEW, order: 2 },
+    { key: 'messages', label: 'Message History', icon: 'pi pi-whatsapp', route: '/messages', permission: PERMISSIONS.MESSAGE_VIEW, order: 3 },
+    { key: 'users', label: 'Users', icon: 'pi pi-user', route: '/users', permission: PERMISSIONS.USER_VIEW, order: 4 },
+    { key: 'roles', label: 'Roles', icon: 'pi pi-shield', route: '/roles', permission: PERMISSIONS.ROLE_VIEW, order: 5 },
+    { key: 'audit-log', label: 'Audit Log', icon: 'pi pi-history', route: '/audit-log', permission: PERMISSIONS.AUDIT_LOG_VIEW, order: 6 },
+    { key: 'settings', label: 'Settings', icon: 'pi pi-cog', route: '/settings', permission: PERMISSIONS.SETTINGS_VIEW, order: 7 },
+  ];
+
+  const ops = defaultItems.map((item) => ({
+    updateOne: {
+      filter: { key: item.key },
+      update: { $setOnInsert: item },
+      upsert: true,
+    },
+  }));
+
+  await MenuItem.bulkWrite(ops);
+  logger.info(`Seeded ${defaultItems.length} default menu items`);
+}
+
 /**
  * Ensures baseline data (permissions, system roles, the Super Admin user, and
  * default settings) exists in the database. Fully idempotent - every step
@@ -137,6 +160,7 @@ async function seedInitialData() {
   const roles = await seedRoles(permissions);
   await seedSuperAdmin(roles[ROLES.SUPER_ADMIN]);
   await seedSettings();
+  await seedMenuItems();
   logger.info('Seeding completed successfully.');
 }
 

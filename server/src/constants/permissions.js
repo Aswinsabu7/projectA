@@ -38,6 +38,9 @@ const PERMISSIONS = {
 
   // Audit Log
   AUDIT_LOG_VIEW: 'AUDIT_LOG_VIEW',
+
+  // Menu
+  MENU_EDIT: 'MENU_EDIT',
 };
 
 const PERMISSION_GROUPS = [
@@ -91,6 +94,10 @@ const PERMISSION_GROUPS = [
   {
     group: 'Audit',
     permissions: [{ key: PERMISSIONS.AUDIT_LOG_VIEW, description: 'View audit logs' }],
+  },
+  {
+    group: 'Menu',
+    permissions: [{ key: PERMISSIONS.MENU_EDIT, description: 'Manage navigation menu items' }],
   },
 ];
 

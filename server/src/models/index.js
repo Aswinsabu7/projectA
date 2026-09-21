@@ -7,4 +7,5 @@ module.exports = {
   Settings: require('./Settings'),
   RefreshToken: require('./RefreshToken'),
   AuditLog: require('./AuditLog'),
+  MenuItem: require('./MenuItem'),
 };

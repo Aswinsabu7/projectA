@@ -30,6 +30,8 @@ export const PERMISSIONS = {
   SETTINGS_EDIT: 'SETTINGS_EDIT',
 
   AUDIT_LOG_VIEW: 'AUDIT_LOG_VIEW',
+
+  MENU_EDIT: 'MENU_EDIT',
 } as const;
 
 export type PermissionKey = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];

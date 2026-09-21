@@ -2,16 +2,8 @@ const logger = require('../config/logger');
 const { Subscriber } = require('../models');
 const subscriberService = require('../services/subscriber.service');
 const messageHistoryService = require('../services/messageHistory.service');
+const { dayRange } = require('../utilities/date.util');
 const { MESSAGE_TYPE } = require('../constants/roles');
-
-function dayRange(daysFromToday) {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  start.setDate(start.getDate() + daysFromToday);
-  const end = new Date(start);
-  end.setHours(23, 59, 59, 999);
-  return { start, end };
-}
 
 const DAY_OFFSET_TO_MESSAGE_TYPE = {
   3: MESSAGE_TYPE.REMINDER_3_DAYS,

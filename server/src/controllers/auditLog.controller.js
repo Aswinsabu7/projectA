@@ -1,5 +1,6 @@
 const asyncHandler = require('../utilities/asyncHandler');
 const ApiResponse = require('../utilities/apiResponse');
+const { searchRegex, paginationMeta } = require('../utilities/query.util');
 const { AuditLog } = require('../models');
 
 const getAuditLogs = asyncHandler(async (req, res) => {
@@ -7,7 +8,7 @@ const getAuditLogs = asyncHandler(async (req, res) => {
   const filter = {};
   if (action) filter.action = action;
   if (moduleName) filter.module = moduleName;
-  if (search) filter.performedByUsername = new RegExp(search.trim(), 'i');
+  if (search) filter.performedByUsername = searchRegex(search);
   if (from || to) {
     filter.createdAt = {};
     if (from) filter.createdAt.$gte = new Date(from);
@@ -20,12 +21,7 @@ const getAuditLogs = asyncHandler(async (req, res) => {
     AuditLog.countDocuments(filter),
   ]);
 
-  return ApiResponse.ok(res, items, 'Audit logs fetched successfully', {
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
-  });
+  return ApiResponse.ok(res, items, 'Audit logs fetched successfully', paginationMeta({ total, page, limit }));
 });
 
 module.exports = { getAuditLogs };

@@ -1,5 +1,6 @@
 const asyncHandler = require('../utilities/asyncHandler');
 const ApiResponse = require('../utilities/apiResponse');
+const { searchRegex, paginationMeta } = require('../utilities/query.util');
 const userService = require('../services/user.service');
 const { recordAudit } = require('../middleware/auditLogger');
 const { AUDIT_ACTIONS } = require('../constants/roles');
@@ -10,17 +11,12 @@ const getUsers = asyncHandler(async (req, res) => {
   if (role) filter.role = role;
   if (status) filter.status = status;
   if (search) {
-    const regex = new RegExp(search.trim(), 'i');
+    const regex = searchRegex(search);
     filter.$or = [{ firstName: regex }, { lastName: regex }, { email: regex }, { username: regex }];
   }
 
   const result = await userService.listUsers(req.pagination, filter);
-  return ApiResponse.ok(res, result.items, 'Users fetched successfully', {
-    total: result.total,
-    page: result.page,
-    limit: result.limit,
-    totalPages: result.totalPages,
-  });
+  return ApiResponse.ok(res, result.items, 'Users fetched successfully', paginationMeta(result));
 });
 
 const getUserById = asyncHandler(async (req, res) => {

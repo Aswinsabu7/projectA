@@ -1,6 +1,7 @@
 const asyncHandler = require('../utilities/asyncHandler');
 const ApiResponse = require('../utilities/apiResponse');
 const ApiError = require('../utilities/apiError');
+const { paginationMeta } = require('../utilities/query.util');
 const subscriberService = require('../services/subscriber.service');
 const excelService = require('../services/excel.service');
 const { recordAudit } = require('../middleware/auditLogger');
@@ -9,12 +10,7 @@ const { AUDIT_ACTIONS } = require('../constants/roles');
 const getSubscribers = asyncHandler(async (req, res) => {
   const { search, platform, status } = req.query;
   const result = await subscriberService.listSubscribers(req.pagination, { search, platform, status });
-  return ApiResponse.ok(res, result.items, 'Subscribers fetched successfully', {
-    total: result.total,
-    page: result.page,
-    limit: result.limit,
-    totalPages: result.totalPages,
-  });
+  return ApiResponse.ok(res, result.items, 'Subscribers fetched successfully', paginationMeta(result));
 });
 
 const getSubscriberById = asyncHandler(async (req, res) => {

@@ -2,7 +2,6 @@ const asyncHandler = require('../utilities/asyncHandler');
 const ApiResponse = require('../utilities/apiResponse');
 const ApiError = require('../utilities/apiError');
 const authService = require('../services/auth.service');
-const tokenService = require('../services/token.service');
 const { recordAudit } = require('../middleware/auditLogger');
 const { AUDIT_ACTIONS } = require('../constants/roles');
 const env = require('../config/env');

@@ -1,14 +1,6 @@
 const { Subscriber } = require('../models');
+const { dayRange } = require('../utilities/date.util');
 const { SUBSCRIBER_STATUS, PLATFORM } = require('../constants/roles');
-
-function daysFromNow(days) {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  start.setDate(start.getDate() + days);
-  const end = new Date(start);
-  end.setHours(23, 59, 59, 999);
-  return { start, end };
-}
 
 async function getWidgets() {
   const baseFilter = { isDeleted: false };
@@ -46,7 +38,7 @@ async function getWidgets() {
 }
 
 async function countExpiringInDays(days) {
-  const { start, end } = daysFromNow(days);
+  const { start, end } = dayRange(days);
   return Subscriber.countDocuments({
     isDeleted: false,
     subscriptionEndDate: { $gte: start, $lte: end },

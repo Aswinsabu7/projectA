@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const ApiError = require('../utilities/apiError');
+const { searchRegex } = require('../utilities/query.util');
 const { Subscriber } = require('../models');
 
 /**
@@ -18,7 +19,7 @@ async function nextSubscriberId() {
 
 function buildSearchFilter(search) {
   if (!search) return {};
-  const regex = new RegExp(search.trim(), 'i');
+  const regex = searchRegex(search);
   return {
     $or: [{ fullName: regex }, { mobileNumber: regex }, { email: regex }, { subscriberId: regex }],
   };

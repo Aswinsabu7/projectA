@@ -1,4 +1,5 @@
 const ApiError = require('../utilities/apiError');
+const { searchRegex } = require('../utilities/query.util');
 const { MessageHistory } = require('../models');
 const { sendWhatsAppMessage, buildMessage } = require('./whatsapp/whatsapp.service');
 const { MESSAGE_STATUS } = require('../constants/roles');
@@ -7,7 +8,7 @@ async function listMessages({ page, limit, skip, sort }, { search, status, messa
   const query = {};
   if (status) query.status = status;
   if (messageType) query.messageType = messageType;
-  if (search) query.mobileNumber = new RegExp(search.trim(), 'i');
+  if (search) query.mobileNumber = searchRegex(search);
 
   const [items, total] = await Promise.all([
     MessageHistory.find(query)

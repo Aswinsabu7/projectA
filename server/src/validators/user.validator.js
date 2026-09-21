@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const env = require('../config/env');
 const objectId = require('./objectId');
 
 const createUser = Joi.object({
@@ -9,7 +10,7 @@ const createUser = Joi.object({
     .pattern(/^[0-9+\-\s]{7,15}$/)
     .required(),
   username: Joi.string().alphanum().min(3).max(30).required(),
-  password: Joi.string().min(8).required(),
+  password: Joi.string().min(env.password.minLength).required(),
   role: objectId.required(),
   status: Joi.string().valid('Active', 'Inactive').default('Active'),
 });

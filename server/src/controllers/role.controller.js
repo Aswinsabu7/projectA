@@ -1,5 +1,6 @@
 const asyncHandler = require('../utilities/asyncHandler');
 const ApiResponse = require('../utilities/apiResponse');
+const { searchRegex, paginationMeta } = require('../utilities/query.util');
 const roleService = require('../services/role.service');
 const { recordAudit } = require('../middleware/auditLogger');
 const { AUDIT_ACTIONS } = require('../constants/roles');
@@ -8,15 +9,10 @@ const getRoles = asyncHandler(async (req, res) => {
   const { search, isActive } = req.query;
   const filter = {};
   if (isActive !== undefined) filter.isActive = isActive === 'true';
-  if (search) filter.name = new RegExp(search.trim(), 'i');
+  if (search) filter.name = searchRegex(search);
 
   const result = await roleService.listRoles(req.pagination, filter);
-  return ApiResponse.ok(res, result.items, 'Roles fetched successfully', {
-    total: result.total,
-    page: result.page,
-    limit: result.limit,
-    totalPages: result.totalPages,
-  });
+  return ApiResponse.ok(res, result.items, 'Roles fetched successfully', paginationMeta(result));
 });
 
 const getActiveRoles = asyncHandler(async (_req, res) => {
